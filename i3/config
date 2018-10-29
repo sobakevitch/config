@@ -161,6 +161,8 @@ bar {
         status_command python3 ~/.config/i3status/config.py
         position bottom
         workspace_buttons yes
+        # icon tray, default screen
+        tray_output eDP-1
 }
 
 ## Custom
@@ -172,6 +174,7 @@ exec --no-startup-id "/usr/bin/compton -b"
 exec --no-startup-id "gnome-keyring-daemon"
 exec --no-startup-id "nm-applet"
 exec --no-startup-id "firewall-applet"
+exec --no-startup-id "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
 exec_always --no-startup-id "~/.config/i3/focus-last.py"
 
 # navigation
@@ -251,3 +254,8 @@ bindsym $mod+Control+b exec --no-startup-id "~/.config/i3/i3_goto.py b"
 
 # move window to
 bindsym $mod+Shift+m exec --no-startup-id "i3-input -F 'move to workspace %s' -P 'Workspace: '
+
+# scratchpad
+bindsym $mod+i [class="Keepassx"] scratchpad show
+bindsym $mod+o scratchpad show
+bindsym $mod+Shift+o move scratchpad

@@ -9,7 +9,7 @@ import i3ipc
 
 SOCKET_FILE = "/tmp/i3_focus_last.so"
 PID_FILE = "/tmp/i3_focus_last.pid"
-MAX_WIN_HISTORY = 30
+MAX_WIN_HISTORY = 10
 
 
 class FocusWatcher:
@@ -30,9 +30,13 @@ class FocusWatcher:
 	def on_window_focus(self, i3conn, event):
 		with self.window_list_lock:
 			window_id = event.container.props.id
+
 			if window_id in self.window_list:
 				self.window_list.remove(window_id)
-			self.window_list.insert(0, window_id)
+
+			if "scratched" not in event.container.props.marks:
+				self.window_list.insert(0, window_id)
+
 			if len(self.window_list) > MAX_WIN_HISTORY:
 				del self.window_list[MAX_WIN_HISTORY:]
 
@@ -59,7 +63,7 @@ class FocusWatcher:
 							self.window_list.remove(history_window_id)
 						else:
 							w = list(filter(lambda x: x.id == history_window_id, windows))[0]
-							if w.workspace().name != current_ws["name"]:
+							if w.workspace().name != current_ws["name"] and w.workspace().name != "__i3_scratch":
 								self.i3.command("[con_id={}] focus".format(history_window_id))
 								break
 			elif data == b"modtab":
